@@ -1,7 +1,7 @@
 package classpath
 
 import (
-	"os"
+	"nilknow-jvm/file"
 	"path/filepath"
 )
 
@@ -11,9 +11,10 @@ type Classpath struct {
 	userClasspath Entry
 }
 
-func Parse(jreOption, cpOption string) *Classpath {
-	cp := &Classpath{}
-	cp.parseBootAndExtClasspath(jreOption)
+func Parse(jreOption string, cpOption string) Classpath {
+	cp := Classpath{}
+	cp.parseBootClasspath(jreOption)
+	cp.parseExtClasspath(jreOption)
 	cp.parseUserClasspath(cpOption)
 	return cp
 }
@@ -29,16 +30,14 @@ func (cp *Classpath) ReadClass(className string) ([]byte, Entry, error) {
 	return cp.userClasspath.readClass(className)
 }
 
-func (cp *Classpath) String() string {
-	return cp.userClasspath.String()
-}
-
-func (cp *Classpath) parseBootAndExtClasspath(jreOption string) {
-	jreDir := getJreDir(jreOption)
-
+func (cp *Classpath) parseBootClasspath(jreOption string) {
+	jreDir := file.GetJreDir(jreOption)
 	jreLibPath := filepath.Join(jreDir, "lib", "*")
 	cp.bootClasspath = newWildcardEntry(jreLibPath)
+}
 
+func (cp *Classpath) parseExtClasspath(jreOption string) {
+	jreDir := file.GetJreDir(jreOption)
 	jreExtPath := filepath.Join(jreDir, "lib", "ext", "*")
 	cp.extClasspath = newWildcardEntry(jreExtPath)
 }
@@ -48,26 +47,4 @@ func (cp *Classpath) parseUserClasspath(cpOption string) {
 		cpOption = "."
 	}
 	cp.userClasspath = newEntry(cpOption)
-}
-
-func getJreDir(jreOption string) string {
-	if jreOption != "" && exists(jreOption) {
-		return jreOption
-	}
-	if exists("./jre") {
-		return "./jre"
-	}
-	if jh := os.Getenv("JAVA_HOME"); jh != "" {
-		return filepath.Join(jh, "jre")
-	}
-	panic("Can not find jre folder")
-}
-
-func exists(path string) bool {
-	if _, err := os.Stat(path); err != nil {
-		if os.IsNotExist(err) {
-			return false
-		}
-	}
-	return true
 }

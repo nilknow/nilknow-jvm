@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// path should like "path/*"
 func newWildcardEntry(path string) CompositeEntry {
 	baseDir := path[:len(path)-1]
 	var compositeEntry []Entry

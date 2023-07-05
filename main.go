@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"nilknow-jvm/classfile"
+	"nilknow-jvm/classpath"
+	"nilknow-jvm/cmd"
 	"strings"
 )
-import "nilknow-jvm/classpath"
-import "nilknow-jvm/cmd"
 
 func main() {
 	command := cmd.ParseCmd()
@@ -30,4 +31,6 @@ func startJVM(cmd *cmd.Cmd) {
 	}
 
 	fmt.Printf("class data:%v\n", classData)
+	cf, err := classfile.Parse(classData)
+	fmt.Printf("class magic number:%x\n", cf)
 }

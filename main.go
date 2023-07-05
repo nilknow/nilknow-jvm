@@ -32,5 +32,7 @@ func startJVM(cmd *cmd.Cmd) {
 
 	fmt.Printf("class data:%v\n", classData)
 	cf, err := classfile.Parse(classData)
-	fmt.Printf("class magic number:%x\n", cf)
+	fmt.Printf("class magic number:%x\n", cf.Magic())
+	fmt.Printf("minor version:%d\n", cf.MinorVersion())
+	fmt.Printf("major version:%d\n", cf.MajorVersion())
 }

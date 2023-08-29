@@ -11,8 +11,8 @@ type Classpath struct {
 	userClasspath Entry
 }
 
-func Parse(jreOption string, cpOption string) Classpath {
-	cp := Classpath{}
+func Parse(jreOption string, cpOption string) *Classpath {
+	cp := &Classpath{}
 	cp.parseBootClasspath(jreOption)
 	cp.parseExtClasspath(jreOption)
 	cp.parseUserClasspath(cpOption)
